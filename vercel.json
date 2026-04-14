@@ -1,7 +1,11 @@
 {
   "outputDirectory": "frontend/dist",
   "experimentalServices": {
-    "frontend": {},
-    "backend": {}
+    "frontend": {
+      "routePrefix": "/"
+    },
+    "backend": {
+      "routePrefix": "/api"
+    }
   }
 }
