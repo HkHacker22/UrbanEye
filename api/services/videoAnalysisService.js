@@ -183,13 +183,17 @@ const applyAnomalyRules = (objects) => {
 // ------------------------------------------------------------------
 // Upload local file to GCS
 // ------------------------------------------------------------------
-const uploadToGCS = async (localPath, bucketName) => {
+const uploadToGCS = async (fileBuffer, originalname, bucketName) => {
   const { Storage } = require('@google-cloud/storage');
   const storage = new Storage();
   const bucket = storage.bucket(bucketName);
-  const destName = `video-${Date.now()}-${path.basename(localPath)}`;
+  const destName = `video-${Date.now()}-${originalname}`;
 
-  await bucket.upload(localPath, { destination: destName });
+  const file = bucket.file(destName);
+  await file.save(fileBuffer, {
+    resumable: false,
+    contentType: 'video/mp4',
+  });
   return `gs://${bucketName}/${destName}`;
 };
 
@@ -224,14 +228,11 @@ const analyzeVideo = async (gcsUri) => {
 // ------------------------------------------------------------------
 // Full pipeline: local file → GCS → analyze
 // ------------------------------------------------------------------
-const processLocalFile = async (localPath, bucketName) => {
-  const gcsUri = await uploadToGCS(localPath, bucketName);
+const processLocalFile = async (fileBuffer, originalname, bucketName) => {
+  const gcsUri = await uploadToGCS(fileBuffer, originalname, bucketName);
   console.log(`☁️  Uploaded to GCS: ${gcsUri}`);
 
   const result = await analyzeVideo(gcsUri);
-
-  // Clean up local temp file
-  fs.unlink(localPath, () => {});
 
   return { gcsUri, ...result };
 };

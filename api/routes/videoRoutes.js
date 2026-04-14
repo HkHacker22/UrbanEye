@@ -3,9 +3,9 @@ const multer  = require('multer');
 const router  = express.Router();
 const videoController = require('../controllers/videoController');
 
-// Multer: store video to disk temporarily before GCS upload
+// Multer: store video in memory (Vercel serverless has no writable filesystem)
 const upload = multer({
-  dest: 'uploads/',
+  storage: multer.memoryStorage(),
   limits: { fileSize: 500 * 1024 * 1024 }, // 500MB max
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('video/')) cb(null, true);

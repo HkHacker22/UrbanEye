@@ -17,8 +17,7 @@ exports.analyzeVideo = async (req, res) => {
 
     // Check GCP is configured (fail fast with helpful error)
     if (!GCP_CREDS || !GCP_BUCKET) {
-      // Clean up uploaded file if any
-      if (file) require('fs').unlink(file.path, () => {});
+      // No cleanup needed — file is in memory only
       return res.status(503).json({
         error: 'Google Cloud is not configured.',
         details: 'Set GOOGLE_APPLICATION_CREDENTIALS and GCP_BUCKET_NAME in your .env file and restart the server.',
@@ -54,7 +53,7 @@ exports.analyzeVideo = async (req, res) => {
       try {
         let result;
         if (file) {
-          result = await processLocalFile(file.path, GCP_BUCKET);
+          result = await processLocalFile(file.buffer, file.originalname, GCP_BUCKET);
         } else {
           const { objects, alerts } = await analyzeVideoFromGCS(gcsUri);
           result = { gcsUri, objects, alerts };
