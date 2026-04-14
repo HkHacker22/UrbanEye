@@ -1,9 +1,12 @@
 {
   "experimentalServices": {
     "frontend": {
+      "framework": "vite",
       "routePrefix": "/"
     },
     "backend": {
+      "runtime": "nodejs",
+      "entrypoint": "api/index.js",
       "routePrefix": "/api"
     }
   }
