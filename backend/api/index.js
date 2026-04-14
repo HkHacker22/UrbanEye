@@ -3,9 +3,20 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const os = require('os');
 
 // Adjust GCP credentials path for serverless if it's a relative path
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS && !path.isAbsolute(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
+if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
+  const tempKeyPath = path.join(os.tmpdir(), 'gcp-key.json');
+  try {
+    fs.writeFileSync(tempKeyPath, process.env.GCP_SERVICE_ACCOUNT_JSON);
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = tempKeyPath;
+    console.log('✅ Created temporary GCP key from environment variable');
+  } catch (err) {
+    console.error('❌ Failed to create temporary GCP key:', err.message);
+  }
+} else if (process.env.GOOGLE_APPLICATION_CREDENTIALS && !path.isAbsolute(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
   process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
     __dirname,
     '..',
@@ -23,7 +34,14 @@ const app = express();
 
 const FRONTEND_URL = process.env.FRONTEND_URL || '*';
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Allow same-origin or explicit FRONTEND_URL
+    if (!origin || origin.includes('vercel.app') || origin === FRONTEND_URL || FRONTEND_URL === '*') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   optionsSuccessStatus: 200
 }));
 
