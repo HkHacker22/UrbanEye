@@ -1,10 +1,6 @@
 {
   "experimentalServices": {
-    "frontend": {
-      "rootDirectory": "frontend"
-    },
-    "backend": {
-      "rootDirectory": "api"
-    }
+    "frontend": {},
+    "backend": {}
   }
 }
