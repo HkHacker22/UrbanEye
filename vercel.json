@@ -1,6 +1,10 @@
 {
   "experimentalServices": {
-    "frontend": {},
-    "backend": {}
+    "frontend": {
+      "routePrefix": "/"
+    },
+    "backend": {
+      "routePrefix": "/api"
+    }
   }
 }
