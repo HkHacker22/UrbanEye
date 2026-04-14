@@ -1,20 +1,13 @@
 {
   "version": 2,
-  "functions": {
-    "backend/api/index.js": {
-      "runtime": "vercel-node@latest",
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "backend/api/index.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "source": "/((?!api/).*)",
+      "destination": "/frontend/dist/$1"
     }
   ]
 }
