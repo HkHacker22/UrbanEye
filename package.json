@@ -8,8 +8,8 @@
     "build": "cd client && npm install && npm run build",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
-  "dependencies": {},
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "vite": "^8.0.8"
   }
 }

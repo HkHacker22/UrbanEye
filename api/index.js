@@ -17,20 +17,18 @@ if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
     console.error('❌ Failed to create temporary GCP key:', err.message);
   }
 } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS && !path.isAbsolute(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
-  // If provided, paths are now relative to the root or specified folder
+  // Paths are now relative to the api/ folder
   process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
     __dirname,
-    '..',
-    'backend',
     process.env.GOOGLE_APPLICATION_CREDENTIALS
   );
 }
 
-// Routes - adjusted path to point to the backend folder from the root api/ folder
-const issueRoutes = require('../backend/routes/issueRoutes');
-const serviceCenterRoutes = require('../backend/routes/serviceCenterRoutes');
-const userRoutes = require('../backend/routes/userRoutes');
-const videoRoutes = require('../backend/routes/videoRoutes');
+// Routes - using local paths within the api/ directory
+const issueRoutes = require('./routes/issueRoutes');
+const serviceCenterRoutes = require('./routes/serviceCenterRoutes');
+const userRoutes = require('./routes/userRoutes');
+const videoRoutes = require('./routes/videoRoutes');
 
 const app = express();
 
