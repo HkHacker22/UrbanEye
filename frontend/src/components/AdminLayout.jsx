@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Map, Settings, LifeBuoy, Bell, Search, ShieldCheck, LogOut, FileText, Shield } from 'lucide-react';
+import { LayoutDashboard, Users, Map, Settings, LifeBuoy, Bell, Search, ShieldCheck, LogOut, FileText, Shield, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/Polish_20260412_192029707.svg';
 import axios from 'axios';
@@ -86,8 +86,9 @@ function Sidebar() {
 }
 
 function TopNav() {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const [showMobileMenu, setShowMobileMenu] = React.useState(false);
 
   React.useEffect(() => {
     const fetchUnread = async () => {
@@ -104,8 +105,11 @@ function TopNav() {
   }, []);
 
   return (
-    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
       <div className="lg:hidden flex items-center gap-2">
+        <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="text-gray-600 p-1.5 focus:outline-none hover:bg-gray-100 rounded-lg transition-colors">
+          {showMobileMenu ? <X size={26} /> : <Menu size={26} />}
+        </button>
         <img src={logo} alt="Admin Logo" className="w-8 h-8 object-contain" />
         <span className="text-xl font-black tracking-tight text-gray-900">Admin</span>
       </div>
@@ -142,6 +146,21 @@ function TopNav() {
           </Link>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {showMobileMenu && (
+        <div className="lg:hidden w-full basis-full mt-4 flex flex-col gap-1 border-t border-gray-100 pt-3 animate-in slide-in-from-top-1">
+          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
+            <Settings size={22} /> System Rules
+          </Link>
+          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
+            <LifeBuoy size={22} /> IT Support
+          </Link>
+          <button onClick={() => { logout(); setShowMobileMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-red-50 text-red-600 w-full text-[15px] mt-1 border border-transparent hover:border-red-100">
+            <LogOut size={22} /> Sign Out
+          </button>
+        </div>
+      )}
     </div>
   );
 }

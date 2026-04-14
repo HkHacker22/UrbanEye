@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Map as MapIcon, PlusSquare, Search, Bell, Settings, LifeBuoy, AlertTriangle, LogOut, User, Shield, ArrowRight, CornerDownRight } from 'lucide-react';
+import { Home, Map as MapIcon, PlusSquare, Search, Bell, Settings, LifeBuoy, AlertTriangle, LogOut, User, Shield, ArrowRight, CornerDownRight, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import NotificationDropdown from './NotificationDropdown';
@@ -73,8 +73,9 @@ function Sidebar() {
 }
 
 function TopNav() {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -177,8 +178,11 @@ function TopNav() {
   };
 
   return (
-    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between shadow-sm">
+    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex flex-wrap items-center justify-between shadow-sm">
       <div className="lg:hidden flex items-center gap-2">
+        <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="text-gray-600 p-1.5 focus:outline-none hover:bg-gray-100 rounded-lg transition-colors">
+          {showMobileMenu ? <X size={26} /> : <Menu size={26} />}
+        </button>
         <span className="text-2xl" role="img" aria-label="shield">🛡️</span>
         <span className="text-xl font-black tracking-tight text-blue-600">UrbanEye</span>
       </div>
@@ -266,6 +270,21 @@ function TopNav() {
           </Link>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {showMobileMenu && (
+        <div className="lg:hidden w-full basis-full mt-4 flex flex-col gap-1 border-t border-gray-100 pt-3 animate-in slide-in-from-top-1">
+          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
+            <Settings size={22} /> Settings
+          </Link>
+          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
+            <LifeBuoy size={22} /> Support
+          </Link>
+          <button onClick={() => { logout(); setShowMobileMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-red-50 text-red-600 w-full text-[15px] mt-1 border border-transparent hover:border-red-100">
+            <LogOut size={22} /> Sign Out
+          </button>
+        </div>
+      )}
     </div>
   );
 }
