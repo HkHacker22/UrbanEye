@@ -78,7 +78,7 @@ app.get('/', (req, res) => {
   res.send('Smart Civic Issue Platform API (Root /api Entry)');
 });
 
-// Main Resource Routes - Corrected for Vercel
+// Main Resource Routes - Corrected for Vercel (removed /api prefix)
 app.use('/issues', issueRoutes);
 app.use('/service-centers', serviceCenterRoutes);
 app.use('/users', userRoutes);
