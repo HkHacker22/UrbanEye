@@ -5,7 +5,6 @@
       "routePrefix": "/"
     },
     "backend": {
-      "runtime": "nodejs18.x",
       "entrypoint": "api/index.js",
       "routePrefix": "/api"
     }
