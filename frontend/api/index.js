@@ -1,10 +1,22 @@
-require('dotenv').config();
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const fs = require('fs');
-const os = require('os');
+import 'dotenv/config';
+import path from 'path';
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import fs from 'fs';
+import os from 'os';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Routes - using local paths within the api/ directory
+import issueRoutes from './routes/issueRoutes.js';
+import serviceCenterRoutes from './routes/serviceCenterRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import videoRoutes from './routes/videoRoutes.js';
+
+const app = express();
 
 // Adjust GCP credentials path for serverless if it's a relative path
 if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
@@ -17,25 +29,15 @@ if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
     console.error('❌ Failed to create temporary GCP key:', err.message);
   }
 } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS && !path.isAbsolute(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
-  // Paths are now relative to the api/ folder
   process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
     __dirname,
     process.env.GOOGLE_APPLICATION_CREDENTIALS
   );
 }
 
-// Routes - using local paths within the api/ directory
-const issueRoutes = require('./routes/issueRoutes');
-const serviceCenterRoutes = require('./routes/serviceCenterRoutes');
-const userRoutes = require('./routes/userRoutes');
-const videoRoutes = require('./routes/videoRoutes');
-
-const app = express();
-
 const FRONTEND_URL = process.env.FRONTEND_URL || '*';
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow same-origin or explicit FRONTEND_URL
     if (!origin || origin.includes('vercel.app') || origin === FRONTEND_URL || FRONTEND_URL === '*') {
       callback(null, true);
     } else {
@@ -48,15 +50,12 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Database connection with state check to avoid multiple connections in serverless
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/smart-civic-db';
 
 const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return;
-  
   const censoredUri = MONGO_URI.replace(/:([^:@]+)@/, ':****@');
   console.log(`Connecting to MongoDB: ${censoredUri}`);
-
   try {
     await mongoose.connect(MONGO_URI, {
       serverSelectionTimeoutMS: 5000,
@@ -70,29 +69,19 @@ const connectDB = async () => {
   }
 };
 
-// Middleware to ensure DB connection
 app.use(async (req, res, next) => {
   await connectDB();
   next();
 });
 
-// Basic Route
 app.get('/', (req, res) => {
   res.send('Smart Civic Issue Platform API (Root /api Entry)');
 });
 
-// Main Resource Routes
-app.use('/api/issues', issueRoutes);
-app.use('/api/service-centers', serviceCenterRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/video', videoRoutes);
+// Main Resource Routes - Corrected for Vercel
+app.use('/issues', issueRoutes);
+app.use('/service-centers', serviceCenterRoutes);
+app.use('/users', userRoutes);
+app.use('/video', videoRoutes);
 
-module.exports = app;
-
-// Local development support
-if (process.env.NODE_ENV !== 'production' && require.main === module) {
-  const PORT = process.env.PORT || 5001;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+export default app;
