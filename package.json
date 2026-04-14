@@ -4,7 +4,7 @@
   "description": "Smart Civic Issue & Safety Platform",
   "scripts": {
     "frontend": "npm run dev --prefix frontend",
-    "backend": "node backend/api/index.js",
+    "backend": "node api/index.js",
     "build": "cd frontend && npm install && npm run build",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },

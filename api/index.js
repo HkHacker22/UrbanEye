@@ -17,18 +17,20 @@ if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
     console.error('❌ Failed to create temporary GCP key:', err.message);
   }
 } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS && !path.isAbsolute(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
+  // If provided, paths are now relative to the root or specified folder
   process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
     __dirname,
     '..',
+    'backend',
     process.env.GOOGLE_APPLICATION_CREDENTIALS
   );
 }
 
-// Routes - adjusted path to '../' because index.js is in 'api/'
-const issueRoutes = require('../routes/issueRoutes');
-const serviceCenterRoutes = require('../routes/serviceCenterRoutes');
-const userRoutes = require('../routes/userRoutes');
-const videoRoutes = require('../routes/videoRoutes');
+// Routes - adjusted path to point to the backend folder from the root api/ folder
+const issueRoutes = require('../backend/routes/issueRoutes');
+const serviceCenterRoutes = require('../backend/routes/serviceCenterRoutes');
+const userRoutes = require('../backend/routes/userRoutes');
+const videoRoutes = require('../backend/routes/videoRoutes');
 
 const app = express();
 
@@ -65,13 +67,12 @@ const connectDB = async () => {
   } catch (err) {
     console.error('ERROR: MongoDB connection failure:', err.message);
     if (process.env.NODE_ENV !== 'production') {
-      // In local dev, we want to know immediately if DB is down
       throw new Error(`Database connection failed: ${err.message}`);
     }
   }
 };
 
-// Middleware to ensure DB connection (MUST be before routes)
+// Middleware to ensure DB connection
 app.use(async (req, res, next) => {
   await connectDB();
   next();
@@ -79,7 +80,7 @@ app.use(async (req, res, next) => {
 
 // Basic Route
 app.get('/', (req, res) => {
-  res.send('Smart Civic Issue Platform API (Vercel Serverless)');
+  res.send('Smart Civic Issue Platform API (Root /api Entry)');
 });
 
 // Main Resource Routes
@@ -88,7 +89,6 @@ app.use('/api/service-centers', serviceCenterRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/video', videoRoutes);
 
-// Export the app for Vercel
 module.exports = app;
 
 // Local development support
