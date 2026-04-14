@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Smart Civic Issue & Safety Platform",
   "scripts": {
-    "frontend": "npm run dev --prefix frontend",
+    "frontend": "npm run dev --prefix client",
     "backend": "node api/index.js",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd client && npm install && npm run build",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "dependencies": {},
