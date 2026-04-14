@@ -2,7 +2,7 @@ require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Ensure Fallback key if the user's dotenv wrapper environment skips loading it
-const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBMnrOvGztfyjMnU1U3cJIi6WWoOB6VAWY';
+const API_KEY = process.env.GEMINI_API_KEY ;
 console.log('Using API KEY:', API_KEY);
 
 const genAI = new GoogleGenerativeAI(API_KEY);
