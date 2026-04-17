@@ -58,10 +58,7 @@ function Sidebar() {
       </nav>
 
       <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-1 w-full text-gray-600">
-        <Link to="#" className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px]">
-          <Settings size={22} /> Settings
-        </Link>
-        <Link to="#" className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px]">
+        <Link to="/support" className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px]">
           <LifeBuoy size={22} /> Support
         </Link>
         <button onClick={logout} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-red-50 text-red-600 w-full text-[15px] mt-2 border border-transparent hover:border-red-100">
@@ -274,10 +271,7 @@ function TopNav() {
       {/* Mobile Menu Dropdown */}
       {showMobileMenu && (
         <div className="lg:hidden w-full basis-full mt-4 flex flex-col gap-1 border-t border-gray-100 pt-3 animate-in slide-in-from-top-1">
-          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
-            <Settings size={22} /> Settings
-          </Link>
-          <Link to="#" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
+          <Link to="/support" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-gray-100 w-full text-[15px] text-gray-600">
             <LifeBuoy size={22} /> Support
           </Link>
           <button onClick={() => { logout(); setShowMobileMenu(false); }} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-medium hover:bg-red-50 text-red-600 w-full text-[15px] mt-1 border border-transparent hover:border-red-100">
